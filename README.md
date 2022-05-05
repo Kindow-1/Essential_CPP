@@ -1,2 +1,2 @@
 # Essential-cpp
-essential cpp的学习
+对侯捷老师的 essential cpp 的学习
