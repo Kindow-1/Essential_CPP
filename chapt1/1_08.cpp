@@ -21,9 +21,10 @@ int main()
     const int seq_cnt = 6;
 
     double user_score = 0.0;
-    bool next_seq = true;  // 显示下一组数列
-    bool go_for_it = true; // 用户想再猜一次
-    bool got_it = false;   // 用户是否猜对
+    bool next_seq = true;    // 显示下一组数列
+    bool go_for_it = true;   // 用户想再猜一次
+    bool got_it = false;     // 用户是否猜对
+    bool user_exist = false; //用户是否存在
 
     int elem_seq[seq_size] = {
         1, 2, 3,  // Fibonacci
@@ -67,12 +68,12 @@ int main()
         string name;
         int nt;
         int nc;
-
         while (iofile >> name)
         {
             iofile >> nt >> nc;
             if (name == user_name)
             {
+                user_exist = true;
                 cout << "Welcome back, " << user_name
                      << "\nYour current sore is " << nc
                      << " out of " << nt << "\nGood Luck!\n";
@@ -81,7 +82,10 @@ int main()
                 num_cor = nc;
             }
         }
+        if (!user_exist)
+            cout << user_name << " has been created!" << endl;
     }
+
     iofile.close();
 
     while (next_seq == true) // 用户想要继续猜某个数列
@@ -145,33 +149,40 @@ int main()
         if (try_again == 'N' || try_again == 'n')
             next_seq = false;
     }
-    iofile.open("seq_data.txt", ios_base::in | ios_base::app);
+
+    cout << "See you, " << user_name
+         << "\nYour current sore is " << num_cor
+         << " out of " << num_tries << endl;
+
+    iofile.open("seq_data.txt", ios_base::in | ios_base::out | ios::binary);
     if (!iofile)
     {
         cerr << "Oops, unable to open session data!" << endl;
     }
     else
     {
-        iofile.seekg(0);
-        string name;
-        int nt;
-        int nc;
-
-        while (iofile >> name)
+        //根据是否存在用户名实现不同的写入功能
+        if (user_exist)
         {
-            iofile >> nt >> nc;
-            if (name == user_name)
+            string name;
+            while (iofile >> name)
             {
-                // iofile.clear();
-                // streampos sp = iofile.tellg();
-                // cout << sp;
-                // iofile.seekp(sp);
-                iofile << name << ' '
-                       << num_tries << ' '
-                       << num_cor << endl;
+                if (name == user_name)
+                {
+                    streampos pos = iofile.tellg();
+                    iofile.seekp(pos);
+                    iofile << ' ' << num_tries
+                           << ' ' << num_cor;
+                }
             }
         }
+        else
+        {
+            iofile.seekp(0, ios::end);
+            iofile << user_name << ' '
+                   << num_tries << ' '
+                   << num_cor << endl;
+        }
     }
-
     return 0;
 }
