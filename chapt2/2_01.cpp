@@ -9,8 +9,7 @@ int main()
 {
     int pos;
     cout << "Please enter a position:(0 to quit) ";
-    cin >> pos;
-    while (pos)
+    while (cin >> pos)
     {
         int elem;
         if (fibon_elem(pos, elem))
@@ -22,7 +21,6 @@ int main()
             cout << "Sorry. Could not calculate element # " << pos << endl;
 
         cout << "Please enter a position:(0 to quit) ";
-        cin >> pos;
     }
 }
 
